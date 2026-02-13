@@ -1,0 +1,171 @@
+\documentclass{article}
+\usepackage[style=ieee]{biblatex}
+\usepackage{fontspec}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage[document]{ragged2e}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{siunitx}
+
+\DeclareSIUnit{\foot}{\text{ft}}
+\DeclareSIUnit{\sper}{\text{/}}
+\newcommand{\mcite}[1]{\ensuremath{\text{\hspace{0.2cm}\cite{#1}}}}
+
+\addbibresource{balltime.bib}
+
+\setmainfont{SF Pro Rounded}
+\setmonofont{AdwaitaMono Nerd Font}[Scale=0.75]
+
+\begin{document}
+
+\section{Initial calculations}
+
+I am trying to calculate the exact time that it would take for \\
+a smooth sphere (the ball) to reach the ground if free falling from \SI{10}{metre} \\
+\vspace{1cm}
+Our variables are \\
+
+\begin{itemize}
+    \item $a$ = acceleration
+    \item $h$ = height
+    \item $t$ = time, which our target is 0
+\end{itemize}
+
+For our case, acceleration will be equal to the acceleration of gravity \SI{9.8}{\metre\sper\second\squared}
+And our initial height will be \SI{10}{\metre}
+
+\vspace{1cm}
+
+\begin{spacing}{2}
+So we know the kinematic equation of $h = vt+\frac{1}{2}at^2$ \cite{wiki:kinequ} \\
+from which we can figure out the formula $t = \sqrt{\frac{2h}{a}}$ \\
+So we can fill in stuff + solve the $2h$ getting $\sqrt{\frac{20}{9.8}}$ \\
+And then finally do $\sqrt{2.04} = \SI{1.428}{\second}$
+\end{spacing}
+
+So we know that the time for our item to fall to the ground starting from \SI{10}{\metre}, \\
+WITHOUT factoring in air resistance is approximately \SI{1.428}{\second}. \\
+But that's not exact, so now we're going to factor in air resistance. \\
+Which is important because it can effect our times, \\
+more info on drag force (air resistance) at \cite{nasa:whatisdrag}
+
+\newpage
+\section{Factoring in air resistance}
+
+\begin{gather*}
+\text{First we need to define our sizes} \\[1ex]
+m = 56\text{g} = \SI{0.056}{\kilo\gram} \\
+D = 6.55\text{cm} = \SI{0.0655}{\metre} \\
+A = \pi(\frac{D}{2})^2 = 0.0033 \mcite{wiki:areacircle} \\[3ex]
+\text{Now we'll define the environment we're in} \\[1ex]
+T \approx \SI{10}{\celsius} = \SI{283.15}{\kelvin} \\
+E \approx \SI{30}{\foot} \\
+\rho \approx 1.2466 \mcite{wiki:airdens} \\[3ex]
+\text{Almost there, just need to define our forces} \\[1ex]
+C_d \approx 0.47 \SI{0.2}{\centi\metre} \mcite{wiki:dragco} \\
+a_g = 9.8 \\[2ex]
+F_g = ma_g = (0.056)(9.8) \approx 0.549 \\
+F_d = \frac{1}{2}\rho v^2C_dA = 0.6233(v^2)0.47\times0.0033 = 0.00096v^2 \mcite{wiki:dragforce} \\
+F_n = F_g - F_d = 0.549 - 0.00096v^2 = 0.549 \\[3ex]
+\text{Finally we define our formulas which we'll use for calculations} \\[1ex]
+a = a_g - a_d = a_g - \frac{F_d}{F_g} = 9.8 - \frac{0.00096v^2}{0.549} = 9.8 - 0.00175v^2 \\
+v = u + at \\
+h = h - vt
+\end{gather*}
+
+\newpage
+\section{Final calculations}
+We will do our first set of calculations in python, we will use $\Delta t = \SI{0.01}{\second}$
+
+\begin{lstlisting}
+h = 10.0
+v = 0.0
+t = 0.0
+dt = 0.01
+while h > 0:
+    a = 9.8 - 0.00175 * v**2
+    v += a * dt
+    h -= v * dt
+    t += dt
+    print(f"|{t:.2f}|{a:.2f}|{v:.2f}|{h:.2f}|")
+\end{lstlisting}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{cccc}
+\hline
+$t$ & $a$ & $v$ & $h$ \\
+\hline
+0.00 & 9.8 & 0 & 10 \\
+0.01 & 9.80 & 0.10 & 10.00 \\
+0.02 & 9.80 & 0.20 & 10.00 \\
+0.03 & 9.80 & 0.29 & 9.99 \\
+0.04 & 9.80 & 0.39 & 9.99 \\
+... & ... & ... & ... \\
+1.39 & 9.49 & 13.48 & 0.52 \\
+1.40 & 9.48 & 13.57 & 0.38 \\
+1.41 & 9.48 & 13.66 & 0.24 \\
+1.42 & 9.47 & 13.76 & 0.11 \\
+1.43 & 9.47 & 13.85 & -0.03 \\
+\hline
+\end{tabular}
+\end{table}
+
+WAIT we hit negative height, that's bad so we need to go back a tiny bit. We'll use python again with a smaller time step ($\Delta t = 0.001$) \\
+and an accuracy of 3 decimals. That changes our table to this:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{cccc}
+\hline
+$t$ & $a$ & $v$ & $h$ \\
+\hline
+0.00 & 9.8 & 0 & 10 \\
+0.001 & 9.800 & 0.010 & 10.000 \\
+0.002 & 9.800 & 0.020 & 10.000 \\
+0.003 & 9.800 & 0.029 & 10.000 \\
+0.004 & 9.800 & 0.039 & 10.000 \\
+... & ... & ... & ... \\
+1.429 & 9.465 & 13.843 & 0.045 \\
+1.430 & 9.465 & 13.853 & 0.031 \\
+1.431 & 9.464 & 13.862 & 0.017 \\
+1.432 & 9.464 & 13.872 & 0.003 \\
+1.433 & 9.463 & 13.881 & -0.011 \\
+\hline
+\end{tabular}
+\end{table}
+
+\newpage
+
+Just for the sake of time we'll go with $1.432$, a height of $0.003$ is good enough.
+
+In conclusion, the time for it to hit the ground is around \SI{1.43}{\second}, \\
+but if you want the real answer, I did more calculations to get
+
+\begin{table}[h]
+\centering
+\begin{tabular}{cccc}
+\hline
+$t$ & $a$ & $v$ & $h$ \\
+\hline
+1.43274 & 9.46293 & 13.87838 & 0.00000 \\
+\hline
+\end{tabular}
+\end{table}
+
+Another thing I did was turn the data I got into a graph, so here it is:
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{results.png}
+\caption{Graph of results}
+\label{fig:results}
+\end{figure}
+
+\newpage
+\printbibliography
+
+\end{document}

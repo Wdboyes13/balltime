@@ -1,0 +1,8 @@
+*
+
+!*.bib
+!*.pdf
+!.gitignore
+!*.tex
+!Makefile
+!*.png
