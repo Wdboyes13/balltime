@@ -11,7 +11,7 @@ Basically what I was doing is I was trynna see how long it takes for a ball to h
 
 ## License
 
-Ball Drop Time Calculation © 2026 by William B is licensed under CC BY-NC-ND 4.0.
+Ball Drop Time Calculation © 2026 by William Boyes is licensed under CC BY-NC-ND 4.0.
 To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-nd/4.0/
 
 ## Fonts
@@ -39,3 +39,25 @@ http://scripts.sil.org/OFL
 
 Copyright 2011 The Roboto Project Authors (https://github.com/googlefonts/roboto-classic)
 This Font Software is licensed under the SIL Open Font License, Version 1.1 . This license is copied below, and is also available with a FAQ at: https://openfontlicense.org
+
+## Required software
+
+Software:
+
+- XeLaTeX (comes with TeXLive)
+- [Biber](https://github.com/plk/biber)
+
+CTAN Packages:
+
+- [BibLaTeX](https://ctan.org/pkg/biblatex)
+- [BibLaTeX IEEE](https://ctan.org/pkg/biblatex-ieee)
+- [Fontspec](https://ctan.org/pkg/fontspec)
+- [GraphicX](https://ctan.org/pkg/graphicx)
+- [AMSMath](https://ctan.org/pkg/amsmath)
+- [SetSpace](https://ctan.org/pkg/setspace)
+- [Ragged2E](https://ctan.org/pkg/ragged2e)
+- [Listings](https://ctan.org/pkg/listings)
+- [TextComp](https://ctan.org/pkg/textcomp)
+- [SIUnitX](https://ctan.org/pkg/siunitx)
+- [FancyHDR](https://ctan.org/pkg/fancyhdr)
+- [UnicodeMath](https://ctan.org/pkg/unicode-math)
